@@ -40,12 +40,13 @@ def solution():
             last_end = -1
             
             for start, end in se_list:
+                if end < start:
+                    return -1
                 if start > last_end:
                     # 겹치지 않는 새 그룹
                     answer += 1
                     last_end = end
-            if answer == 0:
-                return -1
+            
             return answer
 
 if __name__ == '__main__':
