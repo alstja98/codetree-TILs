@@ -1,54 +1,44 @@
-from collections import deque
+def solution(s):
+    n = len(s)
+    needed_chars = set('abcde')
+    patterns = []
 
-def solution():
-    os = input()
-    if len(os)%5 != 0:
-        return -1
-    else:
-        n = len(os)//5
-        alpha_list = ['a','b','c','d','e']
-        alpha_count = []
-        for alphabet in alpha_list:
-            alpha_count.append(os.count(alphabet))
-        
-        for count in alpha_count:
-            if count != n:
-                return -1
-        
-        if 'abcde'*n == os:
-            return 1
+    # abcde의 순서를 유지하며 시작 인덱스를 찾는다
+    i = 0
+    while i <= n - 5:
+        # abcde 순서가 맞는지 확인하면서 인덱스를 추적한다
+        found = True
+        last_index = i
+        next_char_index = {'a': 'b', 'b': 'c', 'c': 'd', 'd': 'e', 'e': ''}
+        current_char = 'a'
+        for j in range(i, n):
+            if s[j] == current_char:
+                if current_char == 'e':  # 'e'를 찾았다면, 패턴 완성
+                    patterns.append((i, j))  # 시작 인덱스와 종료 인덱스 저장
+                    i = j  # 다음 탐색을 현재 'e' 이후부터 시작
+                    break
+                current_char = next_char_index[current_char]
         else:
-            os = list(os)
-            se_list = [[] for _ in range(n)]
-            stage = 0
-            while set('abcde')&set(os):
-                for alphabet in alpha_list:
-                    index_num = os.index(alphabet)
-                    if alphabet == 'a' or alphabet == 'e':
-                        se_list[stage].append(index_num)
-                        os[index_num] = '_'
-                    else:
-                        os[index_num] = '_'
+            break  # 필요한 문자를 찾지 못한 경우 루프 탈출
 
-                stage += 1
-                
-            # print(se_list)
-            se_list.sort()
-            
-            # 최소 그룹 수 계산
-            answer = 0
-            last_end = -1
-            
-            for start, end in se_list:
-                if end < start:
-                    return -1
-                if start > last_end:
-                    # 겹치지 않는 새 그룹
-                    answer += 1
-                    last_end = end
-            
-            return answer
+        i += 1
+
+    if not patterns:
+        return -1
+
+    # 겹치지 않는 구간을 계산하여 최소 개수를 찾는다
+    patterns.sort()  # 시작 인덱스 기준으로 정렬
+    count = 1
+    current_end = patterns[0][1]
+    for start, end in patterns[1:]:
+        if start > current_end:
+            count += 1
+            current_end = end
+        else:
+            current_end = max(current_end, end)
+
+    return count
 
 if __name__ == '__main__':
-    answer = solution()
+    answer = solution(input())
     print(answer)
