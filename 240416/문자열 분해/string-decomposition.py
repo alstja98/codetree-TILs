@@ -32,6 +32,7 @@ def solution():
 
                 stage += 1
                 
+            # print(se_list)
             se_list.sort()
             
             # 최소 그룹 수 계산
@@ -43,7 +44,8 @@ def solution():
                     # 겹치지 않는 새 그룹
                     answer += 1
                     last_end = end
-            
+            if answer == 0:
+                return -1
             return answer
 
 if __name__ == '__main__':
