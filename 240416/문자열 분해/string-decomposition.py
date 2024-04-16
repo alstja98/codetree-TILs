@@ -1,3 +1,5 @@
+from collections import deque
+
 def solution():
     os = input()
     if len(os)%5 != 0:
@@ -16,22 +18,32 @@ def solution():
         if 'abcde'*n == os:
             return 1
         else:
-            answer = 1
             os = list(os)
-            while os:
-                is_end = False
+            se_list = [[] for _ in range(n)]
+            stage = 0
+            while set('abcde')&set(os):
                 for alphabet in alpha_list:
-                    os_str = os[0]
-                    if is_end == True:
-                        os.remove(alphabet)
+                    index_num = os.index(alphabet)
+                    if alphabet == 'a' or alphabet == 'e':
+                        se_list[stage].append(index_num)
+                        os[index_num] = '_'
                     else:
-                        if os_str == alphabet:
-                            os.remove(alphabet)
-                        else:
-                            answer += 1
-                            is_end = True
-                            os.remove(alphabet)
+                        os[index_num] = '_'
 
+                stage += 1
+                
+            se_list.sort()
+            
+            # 최소 그룹 수 계산
+            answer = 0
+            last_end = -1
+            
+            for start, end in se_list:
+                if start > last_end:
+                    # 겹치지 않는 새 그룹
+                    answer += 1
+                    last_end = end
+            
             return answer
 
 if __name__ == '__main__':
